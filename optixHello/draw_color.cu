@@ -30,8 +30,9 @@
 #include <optixu/optixu_math_namespace.h>
 
 using namespace optix;
-
+//rtLaunchIndex : internally provided semantics , identifying each thread launched by rtContextLaunchnD
 rtDeclareVariable(uint2, launch_index, rtLaunchIndex, );
+//result_buffer defined in host api
 rtBuffer<float4, 2>   result_buffer;
 
 rtDeclareVariable(float3,                draw_color, , );

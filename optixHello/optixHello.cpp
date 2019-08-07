@@ -97,14 +97,18 @@ int main(int argc, char* argv[])
         RT_CHECK_ERROR( rtContextDeclareVariable( context, "result_buffer", &result_buffer ) );
         RT_CHECK_ERROR( rtVariableSetObject( result_buffer, buffer ) );
 
+		//use string to use cu file 
         const char *ptx = sutil::getPtxString( "optixHello", "draw_color.cu" );
+		//RTfunction "draw_solid_color" bind to variable ray_gen_program
         RT_CHECK_ERROR( rtProgramCreateFromPTXString( context, ptx, "draw_solid_color", &ray_gen_program) );
+		//draw_color is the variable name used on device
         RT_CHECK_ERROR( rtProgramDeclareVariable( ray_gen_program, "draw_color", &draw_color ) );
         RT_CHECK_ERROR( rtVariableSet3f( draw_color, 0.462f, 0.725f, 0.0f ) );
         RT_CHECK_ERROR( rtContextSetRayGenerationProgram( context, 0, ray_gen_program ) );
 
         /* Run */
         RT_CHECK_ERROR( rtContextValidate( context ) );
+		//ray_gen_program ("draw_solid_color") associated with entry point (0) is invoked (width * height) times.
         RT_CHECK_ERROR( rtContextLaunch2D( context, 0 /* entry point */, width, height ) );
 
         /* Display image */
