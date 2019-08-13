@@ -121,7 +121,8 @@ RT_PROGRAM void closest_hit_radiance3()
     float nDl = dot( ffnormal, L);
 
     if( nDl > 0.0f ){
-      // cast shadow ray
+	  // when close hit happens in radiance ray type trace from camera, cast shadow ray from this intersection point
+	  // to light source . if there are anything along the way (any hit happens) the attenuation is 0 and the ray terminates.
       PerRayData_shadow shadow_prd;
       shadow_prd.attenuation = make_float3(1.0f);
       float Ldist = length(light.pos - hit_point);

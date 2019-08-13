@@ -94,13 +94,16 @@ RT_PROGRAM void closest_hit_radiance1()
 {
   float3 world_geo_normal   = normalize( rtTransformNormal( RT_OBJECT_TO_WORLD, geometric_normal ) );
   float3 world_shade_normal = normalize( rtTransformNormal( RT_OBJECT_TO_WORLD, shading_normal ) );
+  //flip the normal to ensure the normal alway face the light source, it is useful when calculate the translucent material.
   float3 ffnormal     = faceforward( world_shade_normal, -ray.direction, world_geo_normal );
   float3 color = Ka * ambient_light_color;
 
   float3 hit_point = ray.origin + t_hit * ray.direction;
 
+  //all lights are saved in lights
   for(int i = 0; i < lights.size(); ++i) {
     BasicLight light = lights[i];
+	//light direction
     float3 L = normalize(light.pos - hit_point);
     float nDl = dot( ffnormal, L);
 

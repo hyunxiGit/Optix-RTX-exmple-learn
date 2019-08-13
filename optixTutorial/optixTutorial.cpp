@@ -182,6 +182,7 @@ void createContext()
         context->setMaxTraceDepth( 31 );
 
     // Note: high max depth for reflection and refraction through glass
+	//these are all the variables used on device side
     context["max_depth"]->setInt( 100 );
     context["scene_epsilon"]->setFloat( 1.e-4f );
     context["importance_cutoff"]->setFloat( 0.01f );
@@ -214,6 +215,7 @@ void createContext()
     context->setMissProgram( 0, context->createProgramFromPTXString( tutorial_ptx, miss_name ) );
     const float3 default_color = make_float3(1.0f, 1.0f, 1.0f);
     const std::string texpath = texture_path + "/" + std::string( "CedarCity.hdr" );
+	//set the sampler that can be used on devoce
     context["envmap"]->setTextureSampler( sutil::loadTexture( context, texpath, default_color) );
     context["bg_color"]->setFloat( make_float3( 0.34f, 0.55f, 0.85f ) );
 
@@ -263,6 +265,7 @@ void createGeometry()
     Program box_intersect = context->createProgramFromPTXString( ptx, "box_intersect" );
 
     // Create box
+	//create geometry node
     Geometry box = context->createGeometry();
     box->setPrimitiveCount( 1u );
     box->setBoundingBoxProgram( box_bounds );
@@ -341,11 +344,13 @@ void createGeometry()
 
     Material box_matl = context->createMaterial();
     Program box_ch = context->createProgramFromPTXString( tutorial_ptx, box_chname.c_str() );
-    box_matl->setClosestHitProgram( 0, box_ch );
+    //set the close hit program for material
+	box_matl->setClosestHitProgram( 0, box_ch );
     if( tutorial_number >= 3) {
         Program box_ah = context->createProgramFromPTXString( tutorial_ptx, "any_hit_shadow" );
         box_matl->setAnyHitProgram( 1, box_ah );
     }
+	//Ka :how much the ambient light affect the material
     box_matl["Ka"]->setFloat( 0.3f, 0.3f, 0.3f );
     box_matl["Kd"]->setFloat( 0.6f, 0.7f, 0.8f );
     box_matl["Ks"]->setFloat( 0.8f, 0.9f, 0.8f );
@@ -734,6 +739,8 @@ int main( int argc, char** argv )
 
         // load the ptx source associated with tutorial number
         std::stringstream ss;
+		//specify tutorial number here,  use the number to link ptx
+		tutorial_number = 3;
         ss << "tutorial" << tutorial_number << ".cu";
         std::string tutorial_ptx_path = ss.str();
         tutorial_ptx = sutil::getPtxString( SAMPLE_NAME, tutorial_ptx_path.c_str() );
@@ -751,6 +758,7 @@ int main( int argc, char** argv )
         }
         else
         {
+			//updete u v w eye.. parameters
             updateCamera();
             context->launch( 0, width, height );
             sutil::displayBufferPPM( out_file.c_str(), getOutputBuffer() );

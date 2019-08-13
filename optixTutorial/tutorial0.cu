@@ -28,6 +28,8 @@
 
 #include "tutorial.h"
 
+// Attribute variables provide a mechanism for communicating data between 
+//the intersection program and the shading programs
 rtDeclareVariable(float3, shading_normal,   attribute shading_normal, ); 
 
 rtDeclareVariable(PerRayData_radiance, prd_radiance, rtPayload, );
@@ -52,9 +54,10 @@ rtBuffer<uchar4, 2>              output_buffer;
 RT_PROGRAM void pinhole_camera()
 {
   size_t2 screen = output_buffer.size();
-
+  //center part
   float2 d = make_float2(launch_index) / make_float2(screen) * 2.f - 1.f;
   float3 ray_origin = eye;
+  //uvw define the camera, uv -> camera plan, w how far the uv plan is away from eye
   float3 ray_direction = normalize(d.x*U + d.y*V + W);
 
   optix::Ray ray(ray_origin, ray_direction, RADIANCE_RAY_TYPE, scene_epsilon );
