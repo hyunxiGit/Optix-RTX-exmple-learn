@@ -28,9 +28,14 @@
 
 #include "tutorial.h"
 
+//rtDeclareVariable(type, variable name, semantic, annotation);
+//variable declared in this area is like global variable that can be access from all the programe in cu file
+//geometric_normal , shading_normal is initialized in geometry cu
 rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
 rtDeclareVariable(float3, shading_normal,   attribute shading_normal, ); 
 
+//raydiance ray and shadow ray payload
+//rtPayload semantic : The state of the current ray¡¯s payload of user - defined data.
 rtDeclareVariable(PerRayData_radiance, prd_radiance, rtPayload, );
 rtDeclareVariable(PerRayData_shadow,   prd_shadow,   rtPayload, );
 

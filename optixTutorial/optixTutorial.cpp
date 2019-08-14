@@ -379,7 +379,10 @@ void createGeometry()
     floor_matl->setClosestHitProgram( 0, floor_ch );
     if(tutorial_number >= 3) {
         Program floor_ah = context->createProgramFromPTXString( tutorial_ptx, "any_hit_shadow" );
-        floor_matl->setAnyHitProgram( 1, floor_ah );
+        //close hit, any hit program is associate with each (material, ray type) pair
+		//default program is no op
+		//material -> setAnyHitProgram( ray type, program );
+		floor_matl->setAnyHitProgram( 1, floor_ah );
     }
     floor_matl["Ka"]->setFloat( 0.3f, 0.3f, 0.1f );
     floor_matl["Kd"]->setFloat( 194/255.f*.6f, 186/255.f*.6f, 151/255.f*.6f );
@@ -740,7 +743,7 @@ int main( int argc, char** argv )
         // load the ptx source associated with tutorial number
         std::stringstream ss;
 		//specify tutorial number here,  use the number to link ptx
-		tutorial_number = 3;
+		tutorial_number = 4;
         ss << "tutorial" << tutorial_number << ".cu";
         std::string tutorial_ptx_path = ss.str();
         tutorial_ptx = sutil::getPtxString( SAMPLE_NAME, tutorial_ptx_path.c_str() );

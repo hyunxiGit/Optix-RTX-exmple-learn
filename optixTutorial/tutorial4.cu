@@ -153,6 +153,7 @@ rtDeclareVariable(float3, reflectivity, , );
 rtDeclareVariable(float, importance_cutoff, , );
 rtDeclareVariable(int, max_depth, , );
 
+//this closehit programe associate with floor material
 RT_PROGRAM void floor_closest_hit_radiance4()
 {
   float3 world_geo_normal   = normalize( rtTransformNormal( RT_OBJECT_TO_WORLD, geometric_normal ) );
