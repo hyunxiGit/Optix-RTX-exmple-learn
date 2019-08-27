@@ -390,27 +390,38 @@ RT_PROGRAM void glass_closest_hit_radiance()
   float3 beer_attenuation;
   if(dot(n, ray.direction) > 0){
     // Beer's law attenuation
+	//beer_attenuation get larger when hit point distance is longer
+	//t_hit :scale to the hit point
+	//extinction_constant (-0.2, -0.2, -0.2)
+    //beer_attenuation is starting with 1 invers square attenuate along distance
     beer_attenuation = exp(extinction_constant * t_hit);
   } else {
     beer_attenuation = make_float3(1);
   }
 
   // refraction
+  //when the depth does not reach the refraction depth or max depth, do the refraction part
   if (prd_radiance.depth < min(refraction_maxdepth, max_depth))
   {
     float3 t;                                                            // transmission direction
-    if ( refract(t, i, n, refraction_index) )
+    if ( refract(t, i, n, refraction_index) ) //t updated with refraction direction
     {
 
       // check for external or internal reflection
       float cos_theta = dot(i, n);
+	  //case1 ray hit outside of the mesh
       if (cos_theta < 0.0f)
         cos_theta = -cos_theta;
+	  //case 2 hit inside , nee to use the transmit direction
       else
         cos_theta = dot(t, n);
 
+	  //calculate the reflection coefficient using fresnel-schlick approximation
       reflection = fresnel_schlick(cos_theta, fresnel_exponent, fresnel_minimum, fresnel_maximum);
 
+	  //(1.0f-reflection) : reflected ratio
+	  //1.0f-reflection : how much light is refracted
+	  //optix::luminance( refraction_color * beer_attenuation ) : how strong the light is after attenuation
       float importance = prd_radiance.importance * (1.0f-reflection) * optix::luminance( refraction_color * beer_attenuation );
       if ( importance > importance_cutoff ) {
         optix::Ray ray( h, t, RADIANCE_RAY_TYPE, scene_epsilon );
@@ -419,6 +430,7 @@ RT_PROGRAM void glass_closest_hit_radiance()
         refr_prd.importance = importance;
 
         rtTrace( top_object, ray, refr_prd );
+		//only add refraction ratio
         result += (1.0f - reflection) * refraction_color * refr_prd.result;
       } else {
         result += (1.0f - reflection) * refraction_color * cutoff_color;

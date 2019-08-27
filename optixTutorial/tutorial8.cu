@@ -191,12 +191,14 @@ RT_PROGRAM void box_closest_hit_radiance()
       if( fmaxf(light_attenuation) > 0.0f ){
         float3 Lc = light.color * light_attenuation;
         nrDl = max(nrDl * rustiness, 0.0f);
+		//rust use lambert to calculate, no specular
         color += rustKd * rustcolor * nrDl * Lc;
 
         float r = nmDl * (1.0f-rustiness);
         if(nmDl > 0.0f){
           float3 H = normalize(L - ray.direction);
           float nmDh = dot( ffnormal, H );
+		  //non rust use phone
           if(nmDh > 0)
             color += r * metalKs * Lc * pow(nmDh, 1.f/metalroughness);
         }

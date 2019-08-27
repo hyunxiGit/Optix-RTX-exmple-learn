@@ -33,6 +33,8 @@
 
 using namespace optix;
 
+
+//the two vertex on box (minx,mint,minz) (maxx,maxy,maxz)
 rtDeclareVariable(float3, boxmin, , );
 rtDeclareVariable(float3, boxmax, , );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
@@ -40,6 +42,7 @@ rtDeclareVariable(float3, texcoord, attribute texcoord, );
 rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
 rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); 
 
+//tvalue
 static __device__ float3 boxnormal(float t, float3 t0, float3 t1)
 {
   float3 neg = make_float3(t==t0.x?1:0, t==t0.y?1:0, t==t0.z?1:0);
@@ -47,7 +50,7 @@ static __device__ float3 boxnormal(float t, float3 t0, float3 t1)
   return pos-neg;
 }
 
-RT_PROGRAM void box_intersect(int)
+RT_PROGRAM void box_intersect(int/*primitive index*/)
 {
   float3 t0 = (boxmin - ray.origin)/ray.direction;
   float3 t1 = (boxmax - ray.origin)/ray.direction;
@@ -74,6 +77,8 @@ RT_PROGRAM void box_intersect(int)
   }
 }
 
+//RT_PROGRAM void box_bounds (index of primitive , result)
+//result save a box's min.x min.y min.z max.x max.y max.z in order
 RT_PROGRAM void box_bounds (int, float result[6])
 {
   optix::Aabb* aabb = (optix::Aabb*)result;

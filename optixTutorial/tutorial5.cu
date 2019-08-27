@@ -76,6 +76,7 @@ RT_PROGRAM void pinhole_camera()
 // (NEW)
 // Environment map background
 //
+//sampler value set in the host
 rtTextureSampler<float4, 2> envmap;
 RT_PROGRAM void envmap_miss()
 {
@@ -192,6 +193,7 @@ RT_PROGRAM void floor_closest_hit_radiance4()
     }
   }
 
+  //optix::luminance calculate the energy of a RGB light , how bright
   float importance = prd_radiance.importance * optix::luminance( reflectivity );
 
   // reflection ray

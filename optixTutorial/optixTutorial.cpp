@@ -270,6 +270,7 @@ void createGeometry()
     box->setPrimitiveCount( 1u );
     box->setBoundingBoxProgram( box_bounds );
     box->setIntersectionProgram( box_intersect );
+
     box["boxmin"]->setFloat( -2.0f, 0.0f, -2.0f );
     box["boxmax"]->setFloat(  2.0f, 7.0f,  2.0f );
 
@@ -390,8 +391,10 @@ void createGeometry()
     floor_matl["reflectivity"]->setFloat( 0.1f, 0.1f, 0.1f );
     floor_matl["reflectivity_n"]->setFloat( 0.05f, 0.05f, 0.05f );
     floor_matl["phong_exp"]->setFloat( 88 );
-    floor_matl["tile_v0"]->setFloat( 0.25f, 0, .15f );
-    floor_matl["tile_v1"]->setFloat( -.15f, 0, 0.25f );
+    //floor_matl["tile_v0"]->setFloat( 0.25f, 0, .15f );
+    //floor_matl["tile_v1"]->setFloat( -.15f, 0, 0.25f );
+	floor_matl["tile_v0"]->setFloat( .1f, 0, 0.0f );
+	floor_matl["tile_v1"]->setFloat( 0.0f, 0, .1f );
     floor_matl["crack_color"]->setFloat( 0.1f, 0.1f, 0.1f );
     floor_matl["crack_width"]->setFloat( 0.02f );
 
@@ -743,7 +746,7 @@ int main( int argc, char** argv )
         // load the ptx source associated with tutorial number
         std::stringstream ss;
 		//specify tutorial number here,  use the number to link ptx
-		tutorial_number = 4;
+		tutorial_number = 9;
         ss << "tutorial" << tutorial_number << ".cu";
         std::string tutorial_ptx_path = ss.str();
         tutorial_ptx = sutil::getPtxString( SAMPLE_NAME, tutorial_ptx_path.c_str() );
