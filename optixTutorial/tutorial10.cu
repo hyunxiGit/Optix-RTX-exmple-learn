@@ -371,8 +371,9 @@ rtDeclareVariable(float3, shadow_attenuation, , );
 RT_PROGRAM void glass_any_hit_shadow()
 {
   float3 world_normal = normalize( rtTransformNormal( RT_OBJECT_TO_WORLD, shading_normal ) );
+  //fabs() : return absolute value
   float nDi = fabs(dot(world_normal, ray.direction));
-
+  //the transmitted part of the light is the light you can seee in shadow area
   prd_shadow.attenuation *= 1-fresnel_schlick(nDi, 5, 1-shadow_attenuation, make_float3(1));
 
   rtIgnoreIntersection();

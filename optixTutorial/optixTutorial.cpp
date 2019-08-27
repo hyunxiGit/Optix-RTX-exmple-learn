@@ -746,7 +746,7 @@ int main( int argc, char** argv )
         // load the ptx source associated with tutorial number
         std::stringstream ss;
 		//specify tutorial number here,  use the number to link ptx
-		tutorial_number = 9;
+		tutorial_number = 11;
         ss << "tutorial" << tutorial_number << ".cu";
         std::string tutorial_ptx_path = ss.str();
         tutorial_ptx = sutil::getPtxString( SAMPLE_NAME, tutorial_ptx_path.c_str() );

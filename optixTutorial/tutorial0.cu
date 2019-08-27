@@ -44,20 +44,25 @@ rtDeclareVariable(rtObject,     top_object, , );
 //
 // Pinhole camera implementation
 //
+//eye, U, V, W are four variable allow the host API to spesify the position and orientation of the camera
 rtDeclareVariable(float3,        eye, , );
 rtDeclareVariable(float3,        U, , );
 rtDeclareVariable(float3,        V, , );
 rtDeclareVariable(float3,        W, , );
 rtDeclareVariable(float3,        bad_color, , );
+//output buffer size is screen size set int host programe (1080u , 720u)
 rtBuffer<uchar4, 2>              output_buffer;
 
 RT_PROGRAM void pinhole_camera()
 {
   size_t2 screen = output_buffer.size();
-  //center part
+  //make_float2(launch_index) / make_float2(screen) range [0,1]
+  // 2.f - 1.f : remap range [0,1] to range [-1 ,1]
   float2 d = make_float2(launch_index) / make_float2(screen) * 2.f - 1.f;
   float3 ray_origin = eye;
   //uvw define the camera, uv -> camera plan, w how far the uv plan is away from eye
+  //U V can be thought as camspace in worls space unit vector
+  //normalize(d.x*U + d.y*V + W) convert cam space dir to world space dir
   float3 ray_direction = normalize(d.x*U + d.y*V + W);
 
   optix::Ray ray(ray_origin, ray_direction, RADIANCE_RAY_TYPE, scene_epsilon );
